@@ -1,0 +1,459 @@
+Turbo Assembler	 Version 3.1	    07/12/02 14:10:49	    Page 1
+lab3.ASM
+
+
+
+      1				     Title Lab 3: String Swapping
+      2
+      3				     ;	     *************************************************
+      4				     ;	     * Name: Seth Urbach							     *
+      5				     ;	     * Lab Exercise: Lab #3						     *
+      6				     ;	     * Date Started: July 8, 2002				     *
+      7				     ;	     * Date Last Modified: July	12, 2002 - 1:30	PM   *
+      8				     ;	     * Date Due: July 12, 2002						     *
+      9				     ;	     *											    +
+     10				     *
+     11				     ;	     * Program Description:						     *
+     12				     ;	     *	     This lab prompts the user to enter	in two	     *
+     13				     ;	     *	     different strings.	Then the strings are	     *
+     14				     ;	     *	     swapped with each other in	memoryusing the	     *
+     15				     ;	 *   student designed function strSwap.	Then the *
+     16				     ;	     *	     two swapped strings are printed out to the	     *
+     17				     ;	     *	     user									    +
+     18				     *
+     19				     ;	     *************************************************
+     20
+     21	0000			     .model small
+     22	      =000D			     CR		     equ     0dh
+     23	      =000A			     LF		     equ     0ah
+     24	      =	[bp+4]			     string  equ     [bp+4]
+     25
+     26	0000			     .stack 100h
+     27
+     28	0000			     .data
+     29	0000  64*(00)			     ustring1	     db	     100 dup(0)			     ; String variables
+     30	0064  64*(00)			     ustring2	     db	     100 dup(0)
+     31	00C8  64*(00)			     storstr	     db	     100 dup(0)			     ; String save and store	    +
+     32				     inbetween
+     33	012C  64*(00)			     storstr2	     db	     100 dup(0)
+     34	0190  45 6E 74 65 72 20	69+	     prompt	     db	     "Enter in your string: " ,CR, LF, 0
+     35	      6E 20 79 6F 75 72	20+
+     36	      73 74 72 69 6E 67	3A+
+     37	      20 0D 0A 00
+     38	01A9  54 68 69 73 20 70	72+	     msg1	     db	     "This program swaps strings." ,CR,	LF, 0
+     39	      6F 67 72 61 6D 20	73+
+     40	      77 61 70 73 20 73	74+
+     41	      72 69 6E 67 73 2E	0D+
+     42	      0A 00
+     43	01C7  54 68 65 20 73 74	72+	     msg2	     db	     "The strings are swapped. " ,CR, LF, 0
+     44	      69 6E 67 73 20 61	72+
+     45	      65 20 73 77 61 70	70+
+     46	      65 64 2E 20 0D 0A	00
+     47	01E3  54 68 65 20 66 69	72+	     msg3	     db	     "The first	string now contains : "	,CR,LF,0
+     48	      73 74 20 73 74 72	69+
+     49	      6E 67 20 6E 6F 77	20+
+     50	      63 6F 6E 74 61 69	6E+
+     51	      73 20 3A 20 0D 0A	00
+     52	0206  54 68 65 20 73 65	63+	     msg4	     db	     "The second string	now contains: "	,CR,LF,0
+     53	      6F 6E 64 20 73 74	72+
+     54	      69 6E 67 20 6E 6F	77+
+     55	      20 63 6F 6E 74 61	69+
+     56	      6E 73 3A 20 0D 0A	00
+     57
+Turbo Assembler	 Version 3.1	    07/12/02 14:10:49	    Page 2
+lab3.ASM
+
+
+
+     58	0229			     .code
+     59
+     60	0000			     Start:
+     61	0000  B8 0000s			     mov	     AX, @data
+     62	0003  8E D8			     mov	     ds, AX
+     63
+     64	0005			     PrtDisp:
+     65	0005  E8 0137			     call    NewLines			     ; Displays	a new line
+     66	0008  50 55 8B EC C7 46	02+	     push    offset msg1		     ; Stores the message location on the stack
+     67	      01A9r 5D
+     68	0012  E8 015F			     call    PUTSTR			     ; Displays	program	description string
+     69	0015  83 C4 02			     add	     sp, 02			     ; Restore stack
+     70	0018  E8 0124			     call    NewLines			     ; Displays	a new line
+     71
+     72	001B			     GetStrs:
+     73	001B  50 55 8B EC C7 46	02+	     push    offset prompt	     ; Stores the message location on the stack
+     74	      0190r 5D
+     75	0025  E8 014C			     call    PUTSTR			     ; Displays	input prompt
+     76	0028  83 C4 02			     add	     sp, 02			     ; Restore stack
+     77	002B  50 55 8B EC C7 46	02+	     push    offset ustring1	     ; saves address of	the first string variable
+     78	      0000r 5D
+     79	0035  E8 0114			     call    GETSTR			     ; fills the first string variable
+     80	0038  83 C4 02			     add	     sp, 02			     ; Restore stack
+     81	003B  E8 0101			     call    NewLines			     ; Prints two lines
+     82	003E  50 55 8B EC C7 46	02+	     push    offset prompt	     ; Stores the input	prompt's location on the stack
+     83	      0190r 5D
+     84	0048  E8 0129			     call    PUTSTR			     ; Displays	input prompt
+     85	004B  83 C4 02			     add	     sp, 02
+     86	004E  50 55 8B EC C7 46	02+	     push    offset ustring2	     ; saves address of	the 2nd	string variable
+     87	      0064r 5D
+     88	0058  E8 00F1			     call    GETSTR			     ; fills the second	string variable
+     89	005B  83 C4 02			     add	     sp, 02
+     90
+     91	005E			     SwpStart:
+     92	005E  50 55 8B EC C7 46	02+	     push    offset ustring2	     ; saves the address of the	string variables
+     93	      0064r 5D
+     94	0068  50 55 8B EC C7 46	02+	     push    offset ustring1
+     95	      0000r 5D
+     96	0072  E8 005B			     call    strSwap			     ; swaps the locations, in memory, of the	    +
+     97				     strings that are in
+     98												     ;		      the variables:+
+     99				     the intended procedure for	the lab
+    100	0075  50 55 8B EC C7 46	02+	     push    offset msg2		     ; Stores the "swithched" message location on   +
+    101	      01C7r 5D		     the stack
+    102	007F  E8 00F2			     call    PUTSTR			     ; Prints the message to the screen
+    103	0082  83 C4 02			     add	     sp, 02
+    104
+    105	0085			     SwapPrt:
+    106	0085  E8 00B7			     call    NewLines			     ; Prints two new lines
+    107	0088  50 55 8B EC C7 46	02+	     push    offset msg3		     ; Stores the "first string" message location on+
+    108	      01E3r 5D		     the stack
+    109	0092  E8 00DF			     call    PUTSTR			     ; Prints message to the screen
+    110	0095  83 C4 02			     add	     sp, 02
+    111	0098  50 55 8B EC C7 46	02+	     push    offset ustring1	     ; saves address of	the first string variable
+    112	      0000r 5D
+    113	00A2  E8 00CF			     call    PUTSTR			     ; Prints contents of first	string variable:
+    114												     ;		     the second	    +
+Turbo Assembler	 Version 3.1	    07/12/02 14:10:49	    Page 3
+lab3.ASM
+
+
+
+    115				     string
+    116	00A5  83 C4 02			     add	     sp, 02
+    117	00A8  E8 0094			     call    NewLines			     ; Prints two new lines
+    118	00AB  50 55 8B EC C7 46	02+	     push    offset msg4		     ; Stores the "second string" message location  +
+    119	      0206r 5D		     on	the stack
+    120	00B5  E8 00BC			     call    PUTSTR			     ; Prints the message
+    121	00B8  83 C4 02			     add	     sp, 02
+    122	00BB  50 55 8B EC C7 46	02+	     push    offset ustring2	     ; saves address of	the second string variable
+    123	      0064r 5D
+    124	00C5  E8 00AC			     call    PUTSTR			     ; prints contents of the 2nd variable: the	1st +
+    125				     string
+    126	00C8  83 C4 02			     add	     sp, 02
+    127
+    128	00CB			     Finished:
+    129	00CB  B8 4C00			     mov ax, 4C00h		     ;terminate	program	with 00h in
+    130	00CE  CD 21			     int 21h				     ;	     AL	as the "return code"
+    131
+    132
+    133
+    134
+    135
+    136
+    137				     ;------------------------------------------------------------
+    138				     ; strSwap -  Takes	the two	strings	stored on the stack and
+    139				     ;				     swappes thier places in memory: The 1st
+    140				     ;				     string goes to the	second address and the
+    141				     ;				     2nd string	goes to	the first address.
+    142				     ; entry condition:	 1st string address held in first
+    143				     ;			 argument on stack, and	2nd string
+    144				     ;			 address in second argument on stack
+    145				     ; exit condition:	1st output string stored at address in
+    146				     ;			first argument and  2nd	output string stored
+    147				     ;					     at	address	in 2nd argument	on stack
+    148				     ;
+    149				     ;------------------------------------------------------------
+    150
+    151	00D0			     strSwap proc near
+    152
+    153	00D0  55			     push    bp						     ; save all	regiseters
+    154	00D1  8B EC			     mov	     bp, sp
+    155	00D3  56			     push    SI
+    156	00D4  57			     push    DI
+    157	00D5  53			     push    bx
+    158	00D6  50			     push    ax
+    159	00D7  52			     push    dx
+    160	00D8  51			     push    cx
+    161
+    162	00D9  8B 76 04			     mov	     SI, [bp+4]				     ; address of first	string
+    163	00DC  8B 7E 06			     mov	     DI, [bp+6]				     ; address of second string
+    164	00DF  B9 0000			     mov	     CX, 00				     ; initialize CX for counting
+    165	00E2  BB 00C8r			     mov	     BX, offset	storstr		     ; save the	address	of the first	    +
+    166				     temporary storage
+    167													     ;		     variable
+    168
+    169	00E5			     SwapCopy:
+    170	00E5  80 3C 00			     cmp	     byte ptr [SI], 0		     ; End of string?
+    171	00E8  74 09			     je		     SwapNext				     ; if end, move on to SwapNext
+Turbo Assembler	 Version 3.1	    07/12/02 14:10:49	    Page 4
+lab3.ASM
+
+
+
+    172	00EA  8B 14			     mov	     DX, [SI]				     ; store character in 1st string+
+    173				     to	DX
+    174	00EC  88 17			     mov	     byte ptr [BX], dl		     ; store the character into	storage	    +
+    175				     variable
+    176	00EE  46			     inc	     SI						     ; go to next char
+    177	00EF  43			     inc	     BX						     ; go to next address
+    178	00F0  41			     inc	     CX						     ; increment the count
+    179	00F1  EB F2			     jmp	     SwapCopy				     ; start Swapcopy again
+    180
+    181	00F3			     SwapNext:
+    182	00F3  2B D9			     sub	     BX, CX				     ; go to original offset of	    +
+    183				     variable
+    184	00F5  BB 012Cr			     mov	     BX, offset	storstr2	     ; save the	address	of the 2nd temporary+
+    185				     storage
+    186													     ;		     variable
+    187	00F8  B9 0000			     mov	     CX, 00h				     ; initialize CX for counting
+    188
+    189	00FB			     SwapCopy2:
+    190	00FB  80 3D 00			     cmp	     byte ptr [DI], 0		     ; End of 2nd string?
+    191	00FE  74 09			     je		     Swap1				     ; continue	on
+    192	0100  8B 15			     mov	     DX, [DI]				     ; store character in 2nd string+
+    193				     to	DX
+    194	0102  88 17			     mov	     byte ptr [BX], dl		     ; store the character into	storage	    +
+    195				     variable
+    196	0104  47			     inc	     DI						     ; got to next char	in  +
+    197				     string
+    198	0105  43			     inc	     BX						     ; go to next address
+    199	0106  41			     inc	     CX						     ; increment the count
+    200	0107  EB F2			     jmp	     SwapCopy2				     ; start SwapCopy2 again
+    201
+    202	0109			     Swap1:
+    203	0109  2B D9			     sub	     BX, CX				     ; go to original offset of	    +
+    204				     variable
+    205	010B  BB 00C8r			     mov	     BX, offset	storstr		     ; save the	address	of the 2nd temporary+
+    206				     storage
+    207													     ;		     variable
+    208	010E  8B 7E 06			     mov	     DI, [bp+6]				     ; save address of the 2nd string
+    209
+    210	0111			     SwapLoop:
+    211	0111  80 3F 00			     cmp	     byte ptr [BX], 0		     ; End of string?
+    212	0114  74 08			     je		     Swap2				     ; go on to	Swap2
+    213	0116  8B 17			     mov	     DX, [BX]				     ; store character in 1st	    +
+    214				     storage variable to DX
+    215	0118  88 15			     mov	     byte ptr [DI], dl		     ; store the character into	2nd string
+    216	011A  43			     inc	     BX						     ; go to next char
+    217	011B  47			     inc	     DI						     ; go to next address
+    218	011C  EB F3			     jmp	     SwapLoop				     ; start again
+    219
+    220	011E			     Swap2:
+    221	011E  C6 05 00			     mov	     byte ptr [DI], 0		     ; null termination
+    222	0121  BB 012Cr			     mov	     BX, offset	storstr2	     ; store second storage var	address
+    223	0124  8B 76 04			     mov	     SI, [bp+4]				     ; store first string address
+    224
+    225	0127			     SwapLoop2:
+    226	0127  80 3F 00			     cmp	     byte ptr [BX], 0		     ; End of string?
+    227	012A  74 08			     je		     SwapEnd				     ; go on to	end of proc
+    228	012C  8B 17			     mov	     DX, [BX]				     ; store character in 2nd	    +
+Turbo Assembler	 Version 3.1	    07/12/02 14:10:49	    Page 5
+lab3.ASM
+
+
+
+    229				     storage variable to DX
+    230	012E  88 14			     mov	     byte ptr [SI], dl		     ; store the character into	1st string
+    231	0130  43			     inc	     BX						     ; go to next char
+    232	0131  46			     inc	     SI						     ; go to next address
+    233	0132  EB F3			     jmp	     SwapLoop2				     ; start again
+    234
+    235	0134			     SwapEnd:
+    236	0134  C6 04 00			     mov	     byte ptr [SI], 0		     ; null termination	of string
+    237	0137  59			     pop cx						     ; restore registers
+    238	0138  5A			     pop dx
+    239	0139  58			     pop ax
+    240	013A  5B			     pop bx
+    241	013B  5E			     pop     SI
+    242	013C  5F			     pop     DI
+    243	013D  5D			     pop bp
+    244	013E  C3			     ret							     ; go back to call
+    245
+    246	013F			     strSwap endp
+    247
+    248
+    249
+    250
+    251				     ;------------------------------------------------------------
+    252				     ; NewLines	- prints two new lines to the screen; uses
+    253				     ;		DOS int	21h, function 2, to output lines
+    254				     ; entry condition:	 none
+    255				     ; exit condition:	entered	string null terminated and stored
+    256				     ;			at specified address
+    257				     ;
+    258
+    259	013F			     NewLines proc near
+    260	013F  B4 02			     mov ah, 02h			     ; print two newlines (i.e.	CR + LF	+ LF)
+    261	0141  B2 0D			     mov dl, CR
+    262	0143  CD 21			     int 21h
+    263	0145  B2 0A			     mov dl, LF
+    264	0147  CD 21			     int 21h
+    265	0149  CD 21			     int 21h
+    266	014B  C3			     ret
+    267
+    268	014C			     NewLines endp
+    269
+    270
+    271				     ;------------------------------------------------------------
+    272				     ; getstr -	read ASCII char	string from console keyboard; uses
+    273				     ;		DOS int	21h, function 1, to read chars & echo them
+    274				     ;		to screen
+    275				     ; entry condition:	 output	ASCII string address held in
+    276				     ;			 argument on stack
+    277				     ; exit condition:	entered	string null terminated and stored
+    278				     ;			at specified address
+    279				     ;
+    280
+    281	014C			     getstr proc near
+    282	014C  55			     push bp
+    283	014D  8B EC			     mov bp, sp
+    284	014F  53			     push bx
+    285	0150  50			     push ax
+Turbo Assembler	 Version 3.1	    07/12/02 14:10:49	    Page 6
+lab3.ASM
+
+
+
+    286	0151  52			     push dx
+    287
+    288	0152  8B 5E 04			     mov bx, string		     ; address of output string	[bp+4]
+    289	0155  B4 01			     mov ah, 01h			     ; use function 1 of INT 21h
+    290
+    291	0157			     GetLoop:
+    292	0157  CD 21			     int 21h				     ; wait for	char from keyboard
+    293	0159  3C 0D			     cmp al, CR				     ; end of input? (char = CR)
+    294	015B  74 05			     je	     GetEnd
+    295	015D  88 07			     mov [bx],al		     ; save char in string
+    296	015F  43			     inc bx				     ; point to	next char position
+    297	0160  EB F5			     jmp GetLoop
+    298
+    299	0162			     GetEnd:
+    300	0162  C6 07 00			     mov byte ptr [bx],	0    ; CR is converted to null
+    301	0165  B4 02			     mov ah, 02h			     ; print a newline (i.e. CR	+ LF)
+    302	0167  B2 0D			     mov dl, CR
+    303	0169  CD 21			     int 21h
+    304	016B  B2 0A			     mov dl, LF
+    305	016D  CD 21			     int 21h
+    306
+    307	016F  5A			     pop dx
+    308	0170  58			     pop ax
+    309	0171  5B			     pop bx
+    310	0172  5D			     pop bp
+    311	0173  C3			     ret
+    312
+    313	0174			     getstr endp
+    314
+    315
+    316				     ;------------------------------------------------------------
+    317				     ; putstr -	write ASCIIZ char string to console screen; uses
+    318				     ;		DOS int	21h, function 2, to send chars to screen
+    319				     ; entry condition:	 input ASCIIZ string address held in
+    320				     ;			 argument on stack
+    321				     ; exit condition:	none
+    322				     ;
+    323
+    324	0174			     putstr proc near
+    325
+    326	0174  55			     push bp
+    327	0175  8B EC			     mov bp, sp
+    328	0177  53			     push bx
+    329	0178  50			     push ax
+    330	0179  52			     push dx
+    331
+    332	017A  8B 5E 04			     mov bx, string		     ; address of input	string [bp+4]
+    333	017D  B4 02			     mov ah, 2
+    334
+    335	017F			     PrtLoop:
+    336	017F  80 3F 00			     cmp byte ptr [bx],	0    ; end of string?
+    337	0182  74 07			     je	PrtEnd
+    338	0184  8A 17			     mov dl, byte ptr [bx]   ; grab char from string
+    339	0186  CD 21			     int 21h				     ; send to screen
+    340	0188  43			     inc bx				     ; next char
+    341	0189  EB F4			     jmp PrtLoop
+    342
+Turbo Assembler	 Version 3.1	    07/12/02 14:10:49	    Page 7
+lab3.ASM
+
+
+
+    343	018B			     PrtEnd:
+    344	018B  5A			     pop dx
+    345	018C  58			     pop ax
+    346	018D  5B			     pop bx
+    347	018E  5D			     pop bp
+    348	018F  C3			     ret
+    349
+    350	0190			     putstr endp
+    351
+    352
+    353				     end Start
+Turbo Assembler	 Version 3.1	    07/12/02 14:10:49	    Page 8
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "07/12/02"
+??FILENAME			  Text	 "lab3	  "
+??TIME				  Text	 "14:10:49"
+??VERSION			  Number 030A
+@32BIT				  Text	 0
+@CODE				  Text	 _TEXT
+@CODESIZE			  Text	 0
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 LAB3
+@INTERFACE			  Text	 00H
+@MODEL				  Text	 2
+@STACK				  Text	 DGROUP
+@WORDSIZE			  Text	 2
+CR				  Number 000D
+FINISHED			  Near	 _TEXT:00CB
+GETEND				  Near	 _TEXT:0162
+GETLOOP				  Near	 _TEXT:0157
+GETSTR				  Near	 _TEXT:014C
+GETSTRS				  Near	 _TEXT:001B
+LF				  Number 000A
+MSG1				  Byte	 DGROUP:01A9
+MSG2				  Byte	 DGROUP:01C7
+MSG3				  Byte	 DGROUP:01E3
+MSG4				  Byte	 DGROUP:0206
+NEWLINES			  Near	 _TEXT:013F
+PROMPT				  Byte	 DGROUP:0190
+PRTDISP				  Near	 _TEXT:0005
+PRTEND				  Near	 _TEXT:018B
+PRTLOOP				  Near	 _TEXT:017F
+PUTSTR				  Near	 _TEXT:0174
+START				  Near	 _TEXT:0000
+STORSTR				  Byte	 DGROUP:00C8
+STORSTR2			  Byte	 DGROUP:012C
+STRING				  Text	 [bp+4]
+STRSWAP				  Near	 _TEXT:00D0
+SWAP1				  Near	 _TEXT:0109
+SWAP2				  Near	 _TEXT:011E
+SWAPCOPY			  Near	 _TEXT:00E5
+SWAPCOPY2			  Near	 _TEXT:00FB
+SWAPEND				  Near	 _TEXT:0134
+SWAPLOOP			  Near	 _TEXT:0111
+SWAPLOOP2			  Near	 _TEXT:0127
+SWAPNEXT			  Near	 _TEXT:00F3
+SWAPPRT				  Near	 _TEXT:0085
+SWPSTART			  Near	 _TEXT:005E
+USTRING1			  Byte	 DGROUP:0000
+USTRING2			  Byte	 DGROUP:0064
+Turbo Assembler	 Version 3.1	    07/12/02 14:10:49	    Page 9
+Symbol Table
+
+
+
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  STACK				  16  0100 Para	  Stack	  STACK
+  _DATA				  16  0229 Word	  Public  DATA
+_TEXT				  16  0190 Word	  Public  CODE
+

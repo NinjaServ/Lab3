@@ -1,0 +1,118 @@
+Seth Urbach
+CST 250
+Professor Stewart
+Lab 3 - Output
+July 12, 2002
+
+			String Swapping
+
+Lab 3 Program Output:
+
+
+
+C:\CST250\Lab3>lab3
+
+
+This program swaps strings.
+
+
+Enter in your string:
+See
+
+
+Enter in your string:
+This program works
+The strings are swapped.
+
+
+The first string now contains :
+This program works
+
+The second string now contains:
+See
+C:\CST250\Lab3>lab3
+
+
+This program swaps strings.
+
+
+Enter in your string:
+Seth made a string
+
+
+Enter in your string:
+SWAPP
+The strings are swapped.
+
+
+The first string now contains :
+SWAPP
+
+The second string now contains:
+Seth made a string
+C:\CST250\Lab3>lab3
+
+
+This program swaps strings.
+
+
+Enter in your string:
+I am testing my lab 3 program 5 times
+
+
+Enter in your string:
+This string should be swapped with the first
+The strings are swapped.
+
+
+The first string now contains :
+This string should be swapped with the first
+
+The second string now contains:
+I am testing my lab 3 program 5 times
+C:\CST250\Lab3>lab3
+
+
+This program swaps strings.
+
+
+Enter in your string:
+I am First
+
+
+Enter in your string:
+NOW I am FIRST!!!
+The strings are swapped.
+
+
+The first string now contains :
+NOW I am FIRST!!!
+
+The second string now contains:
+I am First
+C:\CST250\Lab3>lab3
+
+
+This program swaps strings.
+
+
+Enter in your string:
+CST 250 taught this to
+
+
+Enter in your string:
+ME!
+The strings are swapped.
+
+
+The first string now contains :
+ME!
+
+The second string now contains:
+CST 250 taught this to
+C:\CST250\Lab3>
+
+
+
+
+
